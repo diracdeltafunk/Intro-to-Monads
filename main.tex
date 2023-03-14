@@ -1,0 +1,215 @@
+\documentclass{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath, amssymb, amsthm}
+
+\usepackage{palatino}
+
+\usepackage{tikz-cd}
+
+\usepackage{enumitem}
+
+\newtheorem{prop}{Proposition}
+\theoremstyle{definition}
+\newtheorem{defn}{Definition}
+\newtheorem{examples}{Examples}
+
+\newcommand{\C}{\mathsf{C}}
+\DeclareMathOperator{\id}{id}
+
+\title{Compact Hausdorff Spaces are Algebraic Objects}
+\author{Ben Spitz}
+\date{March 2023}
+
+\begin{document}
+
+\maketitle
+
+A monad is a categorical gadget that encodes an ``algebraic theory''. For example, there is a monad which encodes the theory of groups, and a monad which encodes the theory of rings. It is useful to be able to identify when a theory is encoded by a monad, because theories encoded by a monad enjoy many useful categorical properties.
+
+For example, isomorphisms in such theories are always detected on underlying objects -- e.g. a group or ring homomorphism is an isomorphism if and only if it is bijective.
+
+In this document, we'll learn the basic theory of monads, and come to an interesting conclusion: the theory of compact hausdorff spaces is encoded by a monad!
+
+\section{Motivating Example}
+
+Let $X$ be a set. The \emph{free abelian group} on $X$ consists of the formal $\mathbb{Z}$-linear combinations of elements of $X$, which comes equipped with a ``formal sum'' operation (we can add any two linear combinations to produce a new linear combination). Let's denote this set of formal $\mathbb{Z}$-linear combinations by $T(X)$ -- to be clear, $T(X)$ is just the set; we are not remembering the formal sum operation!
+
+Now, this formal sum operation can be made a bit more general: instead of just adding two linear combinations, we can just as well interpret any linear combination of linear combinations! This gives a function
+\[\mu_X : T(T(X)) \to T(X).\]
+
+For example, if $X = \{a,b\}$, then $a+b$ and $2a-b$ are elements of $T(X)$, and $2(a+b)-3(2a-b)$ is an element of $T(T(X))$. In this example, $$\mu_X(2(a+b)-3(2a-b)) = -4a+5b.$$
+
+It is not just free abelian groups in which we can talk about $\mathbb{Z}$-linear combinations. In fact, for \emph{any} abelian group $(A,*)$, we can use the operation $*$ to evaluate formal $\mathbb{Z}$-linear combinations of elements of $A$. In other words, we get a function $\varepsilon_A : T(A) \to A$ which encodes the group operation of $(A,*)$, just as $\mu_X$ encoded the formal sum operation on $T(X)$.
+
+We can also try to go the other way -- for any set $Y$ and any function $e : T(Y) \to Y$, we may try to produce an abelian group operation $*$ on $Y$ as follows:
+\[a * b = e(a + b).\]
+Put simply: we view $e$ as a way to evaluate formal linear combinations, which should tell us how to add elements of $Y$. With this in mind, we should impose a condition on $e$: we will assume $e(y) = y$ for all $y \in Y$. In other words, we assume that $e$ evaluates all ``singleton linear combinations'' in the canonical way.
+
+Now $*$ certainly defines a binary operation on $Y$, but it may or may not be an abelian group operation. We would need to check the abelian group axioms, which are abbreviated as follows:
+\begin{enumerate}
+    \item Associativity
+    \item Commutativity
+    \item Identity
+    \item Inverses
+\end{enumerate}
+This is quite a lot to check! Writing all of this out in terms of $e$ and formal $\mathbb{Z}$-linear combinations would be a pain. However, there is a nice characterization of when $*$ is an abelian group operation: $e$ simply needs to respect linear combinations of linear combinations! Precisely:
+
+\begin{prop}
+$*$ is an abelian group operation on $Y$ if and only if the following diagram commutes:
+\[\begin{tikzcd}
+T(T(Y)) \rar["\mu_Y"] \dar["T(e)"] & T(Y) \dar["e"] \\
+T(Y) \rar["e"] & Y
+\end{tikzcd}\]
+where $T(e)$ is the function $T(T(Y)) \to T(Y)$ defined by sending a formal linear combination $a_1 f_1 + \dots + a_n f_n$ (where $a_1, \dots, a_n \in \mathbb{Z}$ and $f_1, \dots, f_n \in T(Y)$) to $a_1 e(f_1) + \dots + a_n e(f_n)$.
+\end{prop}
+
+Let's unpack the diagram:
+
+The top-right composition $e \circ \mu_Y$ takes a formal linear combination of formal linear combinations, collapses it to a formal linear combination using $\mu_Y$, and then evaluates it to an element of $Y$ using $e$.
+
+The left-bottom composition $e \circ T(e)$ takes a formal linear combination of formal linear combinations, uses $e$ to evaluate the inner linear combinations, then uses $e$ again to evaluate the outer linear combination.
+
+Having these two compositions be equal is (vaguely) saying that $e$ interprets formal linear combinations in a way that is compatible with the way that formal linear combinations need to interact with one another.
+
+We will not prove this proposition in full, but let's see how one part of this works -- we'll prove that if the diagram commutes, then $*$ has an identity element.
+
+\begin{proof}
+Consider the element $0 \in T(Y)$ (the empty linear combination). We claim that $e(0)$ is the identity element of $*$. So, let $y \in Y$ be arbitrary. Then
+$$e(0) * y = e(e(0) + y) = e(e(0) + e(y)) = e(T(e)(0+y)) = e(\mu_Y(0+y)) = e(y) = y$$
+and
+$$y * e(0) = e(y + e(0)) = e(e(y) + e(0)) = e(T(e)(y+0)) = e(\mu_Y(y+0)) = e(y) = y.$$
+Since $y$ is arbitrary, this completes the proof.
+\end{proof}
+
+The proofs of the other axioms are mostly similar.
+
+Note: the function $\mu_X : T(T(X)) \to T(X)$ is exactly the function $e$ which encodes the abelian group structure of the free abelian group on $X$! You can check that indeed $\mu_X(f) = f$ for all $f \in T(X)$, and the desired diagram commutes.
+
+In general, a \emph{monad} consists of a ``free construction'' (like $X \mapsto T(X)$) with an associated ``evaluation map'' (like $\mu_X$) and a way to view elements of $X$ as elements of $T(X)$ (in this example: singleton linear combinations).
+
+Then an \emph{algebra} for the monad (in this example: an abelian group) is given by a map $T(X) \to X$ which plays nicely with all of this data, as described above.
+
+And, in order for $X \mapsto T(X)$ to count as a ``free construction'', the map $\mu_X : T(T(X)) \to T(X)$ should exhibit $T(X)$ as an algebra for the monad (in this example: $\mu_X$ encodes the group operation on $T(X)$)!
+
+In the next section, we'll make precise definitions out of this.
+
+\section{Definitions}
+
+Let $\C$ be a category.
+
+\begin{defn}
+A \emph{monad} on $\C$ is a triple $(M, \mu, \eta)$ where:
+\begin{enumerate}[label = (\roman*.)]
+    \item $M : \C \to \C$ is a functor;
+    \item $\mu : M \circ M \to M$ is a natural transformation;
+    \item $\eta : \id_\C \to M$ is a natural transformation;
+    \item the following diagram commutes:
+    % https://q.uiver.app/?q=WzAsNixbMCwwLCJNIFxcY2lyYyBcXGlkX1xcQyJdLFsxLDAsIk0iXSxbMiwwLCJcXGlkX1xcQyBcXGNpcmMgTSJdLFswLDEsIk0gXFxjaXJjIE0iXSxbMiwxLCJNIFxcY2lyYyBNIl0sWzEsMSwiTSJdLFswLDEsIj0iLDEseyJzdHlsZSI6eyJib2R5Ijp7Im5hbWUiOiJub25lIn0sImhlYWQiOnsibmFtZSI6Im5vbmUifX19XSxbMSwyLCI9IiwxLHsic3R5bGUiOnsiYm9keSI6eyJuYW1lIjoibm9uZSJ9LCJoZWFkIjp7Im5hbWUiOiJub25lIn19fV0sWzAsMywiTSBcXGNpcmMgXFxldGEiLDJdLFsyLDQsIlxcZXRhIFxcY2lyYyBNIl0sWzMsNSwiXFxtdSIsMl0sWzQsNSwiXFxtdSJdLFsxLDUsIlxcaWRfTSJdXQ==
+    \[\begin{tikzcd}[ampersand replacement=\&]
+    	{M \circ \id_\C} \& M \& {\id_\C \circ M} \\
+    	{M \circ M} \& M \& {M \circ M}
+    	\arrow[equals, from=1-1, to=1-2]
+    	\arrow[equals, from=1-2, to=1-3]
+    	\arrow["{M \circ \eta}"', from=1-1, to=2-1]
+    	\arrow["{\eta \circ M}", from=1-3, to=2-3]
+    	\arrow["\mu"', from=2-1, to=2-2]
+    	\arrow["\mu", from=2-3, to=2-2]
+    	\arrow["{\id_M}", from=1-2, to=2-2]
+    \end{tikzcd}\]
+    \item the following diagram commutes:
+    % https://q.uiver.app/?q=WzAsNCxbMCwwLCJNIFxcY2lyYyBNIFxcY2lyYyBNIl0sWzEsMCwiTSBcXGNpcmMgTSJdLFswLDEsIk0gXFxjaXJjIE0iXSxbMSwxLCJNIl0sWzAsMSwiTSBcXGNpcmMgXFxtdSJdLFswLDIsIlxcbXUgXFxjaXJjIE0iLDJdLFsyLDMsIlxcbXUiLDJdLFsxLDMsIlxcbXUiXV0=
+    \[\begin{tikzcd}[ampersand replacement=\&]
+    	{M \circ M \circ M} \& {M \circ M} \\
+    	{M \circ M} \& M
+    	\arrow["{M \circ \mu}", from=1-1, to=1-2]
+    	\arrow["{\mu \circ M}"', from=1-1, to=2-1]
+    	\arrow["\mu"', from=2-1, to=2-2]
+    	\arrow["\mu", from=1-2, to=2-2]
+    \end{tikzcd}\]
+\end{enumerate}
+Equivalently, if you're the kind of person who prefers this: a monad is a monoid object in the strict monoidal category $(\operatorname{End}(\C), \circ)$.
+\end{defn}
+
+\begin{examples}$\ $
+\begin{enumerate}[label = \textbf{\Alph*.}]
+    \item To connect with motivating example in the previous section: we used $\C = \mathsf{Set}$, and the functor under consideration was called $T$. The natural transformation $\mu$ was exactly the map $\mu_X : T(T(X)) \to T(X)$ that we described, and the natural transformation $\eta$ was the function $X \to T(X)$ which sends each element of $X$ to its singleton linear combination.
+    \item Let $M : \mathsf{Ab} \to \mathsf{Ab}$ be the functor $\mathbb{R} \otimes {-}$. There is a natural map $\eta_X : X \to \mathbb{R} \otimes X$ given by $x \mapsto 1 \otimes x$, and a natural map $\mu_X : \mathbb{R} \otimes (\mathbb{R} \otimes X) \to \mathbb{R} \otimes X$ given by linearly extending $r \otimes (s \otimes x) \mapsto rs \otimes x$. The triple $(M, \mu, \eta)$ is a monad on $\mathsf{Ab}$.
+    \item The above example generalizes: simply replace $\mathbb{R}$ with any ring whatsoever.
+    \item Let $P : \mathsf{Set} \to \mathsf{Set}$ be the (covariant) power set functor, which sends each set $X$ to its power set $P(X)$, and sends a morphism $f : X \to Y$ to the morphism $P(f) : P(X) \to P(Y)$ defined by $P(f)(A) = \{f(a) : a \in A\}$. There is natural map $\eta_X : X \to P(X)$ given by $x \mapsto \{x\}$, and a natural map $\mu_X : P(P(X)) \to P(X)$ given by $S \mapsto \bigcup S$. The triple $(P, \mu, \eta)$ is a monad on $\mathsf{Set}$.
+    \item Let $L : \mathsf{Set} \to \mathsf{Set}$ be the functor which sends each set $X$ to the set $L(X) := \coprod_{n \geq 0} X^n$ of finite strings in $X$. There is a natural map $\eta_X : X \to L(X)$ which sends each element of $X$ to the corresponding $1$-letter string, and a natural map $\mu_X : L(L(X)) \to X$ which takes a string of strings and concatenates it. The triple $(L, \mu, \eta)$ is a monad on $\mathsf{Set}$.
+    \item Let $G : \mathsf{Set} \to \mathsf{Set}$ be the functor which sends each set $X$ to the set $G(X)$ of finitely-supported probability measures on $X$ (with the discrete $\sigma$-algebra), and sends a function $f : X \to Y$ to the pushforward function $G(f) : G(X) \to G(Y)$ given by $G(f)(\nu) = f_* \nu$. There is a natural map $\eta_X : X \to G(X)$ given by $x \mapsto \delta_x$, and a natural map $\mu_X : G(G(X)) \to G(X)$ given by $\mu_X(N)(E) = \int_{G(X)} \nu(E) \; \mathrm{d}N(\nu)$. The triple $(G, \mu, \eta)$ is a monad on $\mathsf{Set}$.
+    \item Let $B : \mathsf{Top} \to \mathsf{Top}$ be the functor which sends a space $X$ to the space $B(X) := X \amalg \{*\}$ and which sends a morphism $f : X \to Y$ to the morphism $X \amalg \{*\} \to Y \amalg \{*\}$ given by $x \mapsto f(x)$ for $x \in X$ and $* \mapsto *$. There is a natural inclusion $\eta_X : X \to B(X)$, and there is a natural map $B(B(X)) = (X \amalg \{*\}) \amalg \{*\} \to B(X)$ given by sending both copies of $*$ to the same point $* \in B(X)$. The triple $(B,\mu,\eta)$ is a monad on $\mathsf{Top}$.
+    \item The above example generalizes: simply replace $\mathsf{Top}$ with any category which has binary coproducts and a terminal object.
+    \item Let $X$ be a topological space, and let $\mathcal{P}(X)$ denote the power set of $X$, viewed as a poset category. Let $\operatorname{cl} : \mathcal{P}(X) \to \mathcal{P}(X)$ be the functor given by $\operatorname{cl}(A) = \overline{A}$. There is an inclusion $\eta_A : A \to \overline{A}$ for all $A \subseteq X$, and an inclusion (actually an equality) $\mu_A : \overline{\overline{A}} \to \overline{A}$ for all $A \subseteq X$. The triple $(\operatorname{cl}, \eta, \mu)$ is a monad on $\mathcal{P}(X)$.
+    \item Let $P : \mathsf{Quiv} \to \mathsf{Quiv}$ be the functor which sends a quiver $Q$ to its path quiver $P(Q)$ (and does the appropriate thing to quiver morphisms). There is a natural map $\eta_Q : Q \to P(Q)$ which sends each vertex of $Q$ to the empty path starting at $Q$ and edge of $Q$ to the singleton path consisting of that edge. There is also a natural map $\mu_Q : P(P(Q)) \to P(Q)$ which sends a path of paths to its concatenation. The triple $(P,\mu,\eta)$ is a monad on $\mathsf{Quiv}$.
+\end{enumerate}
+\end{examples}
+
+\begin{defn}
+Let $\mathbf{M} = (M,\mu,\eta)$ be a monad on $\C$. An \emph{algebra} over $\mathbf{M}$ (aka an $\mathbf{M}$-algebra) is a pair $(X,e)$, where
+\begin{enumerate}[label = (\roman*.)]
+    \item $X$ is an object of $\C$;
+    \item $e : M(X) \to X$ is a morphism in $\C$;
+    \item the following diagram commutes:
+    % https://q.uiver.app/?q=WzAsMyxbMCwwLCJYIl0sWzEsMCwiTShYKSJdLFsxLDEsIlgiXSxbMCwxLCJcXGV0YV9YIl0sWzEsMiwiZSJdLFswLDIsIlxcaWRfWCIsMl1d
+    \[\begin{tikzcd}[ampersand replacement=\&]
+    	X \& {M(X)} \\
+    	\& X
+    	\arrow["{\eta_X}", from=1-1, to=1-2]
+    	\arrow["e", from=1-2, to=2-2]
+    	\arrow["{\id_X}"', from=1-1, to=2-2]
+    \end{tikzcd}\]
+    \item the following diagram commutes:
+    % https://q.uiver.app/?q=WzAsNCxbMCwwLCJNKE0oWCkpIl0sWzEsMCwiTShYKSJdLFsxLDEsIlgiXSxbMCwxLCJNKFgpIl0sWzAsMSwiXFxtdV9YIl0sWzEsMiwiZSJdLFswLDMsIk0oZSkiLDJdLFszLDIsImUiLDJdXQ==
+    \[\begin{tikzcd}[ampersand replacement=\&]
+    	{M(M(X))} \& {M(X)} \\
+    	{M(X)} \& X
+    	\arrow["{\mu_X}", from=1-1, to=1-2]
+    	\arrow["e", from=1-2, to=2-2]
+    	\arrow["{M(e)}"', from=1-1, to=2-1]
+    	\arrow["e"', from=2-1, to=2-2]
+    \end{tikzcd}\]
+\end{enumerate}
+\end{defn}
+
+\begin{examples}$\ $
+\begin{enumerate}[label = \textbf{\Alph*.}]
+    \item Algebras for the motivating example monad $T$ on $\mathsf{Set}$ from the previous section are just abelian groups.
+    \item Algebras for the monad $\mathbb{R} \otimes {-}$ on $\mathsf{Ab}$ are just real vector spaces.
+    \item Algebras for the monad $R \otimes {-}$ on $\mathsf{Ab}$ (where $R$ is any ring) are just left $R$-modules.
+    \item Algebras for the power-set monad $P$ on $\mathsf{Set}$ are just complete semilattices.
+    \item Algebras for the finite-string monad $L$ on $\mathsf{Set}$ are just monoids.
+    \item Algebras for the finite-probability-measure monad $G$ on $\mathsf{Set}$ are just abstract convex spaces.
+    \item Algebras for the free-basepoint monad $B$ on $\mathsf{Top}$ are just pointed topological spaces.
+    \item Algebras for the free-basepoint monad $B$ on an arbitrary category $\C$ with finite coproducts and a terminal object are just pointed objects in $\C$.
+    \item Algebras for the closure monad $\operatorname{cl}$ on the power set of a topological space $X$ are just closed subsets of $X$.
+    \item Algebras for the path monad on $\mathsf{Quiv}$ are just small categories.
+\end{enumerate}
+\end{examples}
+
+We now come to our first proposition about monads, which we saw a special case of earlier:
+
+\begin{prop}
+Let $\mathbf{M} = (M, \mu, \eta)$ be a monad on a category $\C$. For each object $X$ of $\C$, $(M(X), \mu_X)$ is an $\mathbf{M}$-algebra, called the \emph{free $\mathbf{M}$-algebra on $X$}.
+\end{prop}
+
+\begin{proof}
+    We must verify first that
+    \[\begin{tikzcd}[ampersand replacement=\&]
+    	M(X) \& {M(M(X))} \\
+    	\& M(X)
+    	\arrow["{\eta_{M(X)}}", from=1-1, to=1-2]
+    	\arrow["\mu_X", from=1-2, to=2-2]
+    	\arrow["\id_{M_X}"', from=1-1, to=2-2]
+    \end{tikzcd}\]
+    commutes. This holds 
+\end{proof}
+
+\section{Adjunctions}
+
+\section{The Monadicity Theorem}
+
+\section{Application}
+
+\end{document}
