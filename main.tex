@@ -17,6 +17,7 @@
 \newtheorem{examples}{Examples}
 
 \newcommand{\C}{\mathsf{C}}
+\newcommand{\D}{\mathsf{D}}
 \DeclareMathOperator{\id}{id}
 \newcommand{\Alg}{\mathsf{Alg}}
 \DeclareMathOperator{\Hom}{Hom}
@@ -226,7 +227,7 @@ We summarize these examples of monads and their algebras in the following table:
     \def\arraystretch{1.5}
     \begin{tabular}{c|c|c}
          $\C$ & $\mathbf{M}$ & $\mathbf{M}$-algebras \\ \hline
-         $\mathsf{Set}$ & ``formal $\mathbb{Z}$-linear combinations'' & abelian groups \\
+         $\mathsf{Set}$ & formal $\mathbb{Z}$-linear combinations & abelian groups \\
          $\mathsf{Ab}$ & \makecell{$R \otimes {-}$ \\ {\color{gray} ($R \in \mathsf{Ring}$)}}  & left $R$-modules \\
          $\mathsf{Set}$ & power set & complete semilattices \\
          $\mathsf{Set}$ & finite strings & monoids \\
@@ -348,6 +349,29 @@ where $U_{\mathbf{M}} : \mathbf{M}{-}\Alg \to \C$ is the forgetful functor $(X,e
 This proposition shows that every monad gives rise to an adjunction. In fact, every monad gives rise to \emph{two} natural adjunctions, and in the other direction every adjunction gives rise to a monad! In the next section, we'll investigate this phenomenon.
 
 \section{Adjunctions}
+
+Let $F \dashv G$ be any adjunction between categories $\C$ and $\D$ (that is, $F : \C \to \D$ is left adjoint to $G : \D \to \C$), defined by a unit $\eta : \id_{\C} \to G \circ F$ and counit $\varepsilon : F \circ G \to \id_{\D}$. Then $G \circ F : \C \to \C$ is an endofunctor of $\C$ with a natural monad structure, whose unit map is simply $\eta$ and whose multiplication map is the whiskering
+\[G \circ F \circ G \circ F \xrightarrow{G \circ \varepsilon \circ F} G \circ \id_{\D} \circ F = G \circ F.\]
+In other words, $(G \circ F, G \circ \varepsilon \circ F, \eta)$ is a monad on $\C$. So, every adjunction gives rise to a monad. However, different adjunctions may yield the same monad!
+
+For example, let $F \dashv U$ be the free-forgetful adjunction between $\mathsf{Set}$ and $\mathsf{Ab}$. Then the monad $U \circ F$ is exactly the formal-$\mathbb{Z}$-linear-combination monad discussed in the first section. We can notice that $F(X)$ is always torsion-free, so this adjunction restricts to one between $\mathsf{Set}$ and the full subcategory of $\mathsf{Ab}$ spanned by the torsion-free abelian groups, and this restricted adjunction produces the same monad! And if we wanted, we could restrict even further to the full subcategory of free abelian groups.
+
+For a given monad $\mathbf{M}$, there is some structure to the collection of adjunctions which yield $\mathbf{M}$, which we'll now study.
+
+\begin{defn}
+Let $\mathbf{M}$ be a monad on a category $\C$. An \emph{$\mathbf{M}$-adjunction} is an adjunction
+% https://q.uiver.app/?q=WzAsMixbMCwwLCJcXEQiXSxbMCwxLCJcXEMiXSxbMCwxLCJVIiwwLHsib2Zmc2V0IjotMn1dLFsxLDAsIkYiLDAseyJvZmZzZXQiOi0yfV0sWzMsMiwiIiwwLHsibGV2ZWwiOjEsInN0eWxlIjp7Im5hbWUiOiJhZGp1bmN0aW9uIn19XV0=
+\[\begin{tikzcd}[ampersand replacement=\&]
+	\D \\
+	\C
+	\arrow[""{name=0, anchor=center, inner sep=0}, "U", shift left=2, from=1-1, to=2-1]
+	\arrow[""{name=1, anchor=center, inner sep=0}, "F", shift left=2, from=2-1, to=1-1]
+	\arrow["\dashv"{anchor=center}, draw=none, from=1, to=0]
+\end{tikzcd}\]
+such that the monad $(G \circ F, G \circ \varepsilon \circ F, \eta)$ equals $\mathbf{M}$.
+\end{defn}
+
+The above definition is of course ``evil'', but don't worry about that for now.
 
 \section{The Monadicity Theorem}
 
