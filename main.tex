@@ -4,10 +4,12 @@
 \usepackage{amsmath, amssymb, amsthm}
 
 \usepackage{palatino}
+\usepackage{enumitem}
+\usepackage{makecell}
+
+\usepackage[colorlinks]{hyperref}
 
 \usepackage{tikz-cd}
-
-\usepackage{enumitem}
 
 \newtheorem{prop}{Proposition}
 \theoremstyle{definition}
@@ -16,6 +18,8 @@
 
 \newcommand{\C}{\mathsf{C}}
 \DeclareMathOperator{\id}{id}
+\newcommand{\Alg}{\mathsf{Alg}}
+\DeclareMathOperator{\Hom}{Hom}
 
 \title{Compact Hausdorff Spaces are Algebraic Objects}
 \author{Ben Spitz}
@@ -98,13 +102,13 @@ In the next section, we'll make precise definitions out of this.
 
 Let $\C$ be a category.
 
-\begin{defn}
+\begin{defn}\label{def:monad}
 A \emph{monad} on $\C$ is a triple $(M, \mu, \eta)$ where:
 \begin{enumerate}[label = (\roman*.)]
-    \item $M : \C \to \C$ is a functor;
-    \item $\mu : M \circ M \to M$ is a natural transformation;
-    \item $\eta : \id_\C \to M$ is a natural transformation;
-    \item the following diagram commutes:
+    \item\label{def:monad:data:functor} $M : \C \to \C$ is a functor;
+    \item\label{def:monad:data:multiplication} $\mu : M \circ M \to M$ is a natural transformation;
+    \item\label{def:monad:data:unit} $\eta : \id_\C \to M$ is a natural transformation;
+    \item\label{def:monad:condition:id} the following diagram commutes:
     % https://q.uiver.app/?q=WzAsNixbMCwwLCJNIFxcY2lyYyBcXGlkX1xcQyJdLFsxLDAsIk0iXSxbMiwwLCJcXGlkX1xcQyBcXGNpcmMgTSJdLFswLDEsIk0gXFxjaXJjIE0iXSxbMiwxLCJNIFxcY2lyYyBNIl0sWzEsMSwiTSJdLFswLDEsIj0iLDEseyJzdHlsZSI6eyJib2R5Ijp7Im5hbWUiOiJub25lIn0sImhlYWQiOnsibmFtZSI6Im5vbmUifX19XSxbMSwyLCI9IiwxLHsic3R5bGUiOnsiYm9keSI6eyJuYW1lIjoibm9uZSJ9LCJoZWFkIjp7Im5hbWUiOiJub25lIn19fV0sWzAsMywiTSBcXGNpcmMgXFxldGEiLDJdLFsyLDQsIlxcZXRhIFxcY2lyYyBNIl0sWzMsNSwiXFxtdSIsMl0sWzQsNSwiXFxtdSJdLFsxLDUsIlxcaWRfTSJdXQ==
     \[\begin{tikzcd}[ampersand replacement=\&]
     	{M \circ \id_\C} \& M \& {\id_\C \circ M} \\
@@ -117,7 +121,7 @@ A \emph{monad} on $\C$ is a triple $(M, \mu, \eta)$ where:
     	\arrow["\mu", from=2-3, to=2-2]
     	\arrow["{\id_M}", from=1-2, to=2-2]
     \end{tikzcd}\]
-    \item the following diagram commutes:
+    \item\label{def:monad:condition:assoc} the following diagram commutes:
     % https://q.uiver.app/?q=WzAsNCxbMCwwLCJNIFxcY2lyYyBNIFxcY2lyYyBNIl0sWzEsMCwiTSBcXGNpcmMgTSJdLFswLDEsIk0gXFxjaXJjIE0iXSxbMSwxLCJNIl0sWzAsMSwiTSBcXGNpcmMgXFxtdSJdLFswLDIsIlxcbXUgXFxjaXJjIE0iLDJdLFsyLDMsIlxcbXUiLDJdLFsxLDMsIlxcbXUiXV0=
     \[\begin{tikzcd}[ampersand replacement=\&]
     	{M \circ M \circ M} \& {M \circ M} \\
@@ -173,7 +177,7 @@ Let $\mathbf{M} = (M,\mu,\eta)$ be a monad on $\C$. An \emph{algebra} over $\mat
 \end{enumerate}
 \end{defn}
 
-\begin{examples}$\ $
+\begin{examples}\label{examples:algebras}$\ $
 \begin{enumerate}[label = \textbf{\Alph*.}]
     \item Algebras for the motivating example monad $T$ on $\mathsf{Set}$ from the previous section are just abelian groups.
     \item Algebras for the monad $\mathbb{R} \otimes {-}$ on $\mathsf{Ab}$ are just real vector spaces.
@@ -212,8 +216,136 @@ Let $\mathbf{M} = (M, \mu, \eta)$ be a monad on a category $\C$. For each object
     	\arrow["{M(\mu_X)}"', from=1-1, to=2-1]
     	\arrow["\mu_X"', from=2-1, to=2-2]
     \end{tikzcd}\]
-    commute. The first diagram is the right-hand square of \ref{def:monad:identity} in Definition~\ref{def:monad}, and the second diagram is exactly \ref{def:monad:multiplication} in Definition~\ref{def:monad}.
+    commute. But the first diagram is the right-hand square of \ref{def:monad:condition:id} in Definition~\ref{def:monad}, and the second diagram is exactly \ref{def:monad:condition:assoc} in Definition~\ref{def:monad}.
 \end{proof}
+
+We summarize these examples of monads and their algebras in the following table:
+
+\begin{table}[h]
+    \centering
+    \def\arraystretch{1.5}
+    \begin{tabular}{c|c|c}
+         $\C$ & $\mathbf{M}$ & $\mathbf{M}$-algebras \\ \hline
+         $\mathsf{Set}$ & ``formal $\mathbb{Z}$-linear combinations'' & abelian groups \\
+         $\mathsf{Ab}$ & \makecell{$R \otimes {-}$ \\ {\color{gray} ($R \in \mathsf{Ring}$)}}  & left $R$-modules \\
+         $\mathsf{Set}$ & power set & complete semilattices \\
+         $\mathsf{Set}$ & finite strings & monoids \\
+         $\mathsf{Set}$ & finite probability measures & abstract convex spaces \\
+         $\mathsf{Top}$ & free basepoint & pointed spaces \\
+         \makecell{$\mathcal{P}(X)$ \\ {\color{gray} ($X \in \mathsf{Top}$)}} & closure & closed subsets of $X$ \\
+         $\mathsf{Quiv}$ & paths & small categories
+    \end{tabular}
+    \caption{Examples of categories $\C$, monads $\mathbf{M}$ on $\C$, and characterizations of $\mathbf{M}$-algebras.}
+    \label{table:examples:monads-and-algebras}
+\end{table}
+
+For each of these examples, there is a familiar category of $\mathbf{M}$-algebras. For example, a morphism of pointed spaces $(X,x) \to (Y,y)$ is a morphism $f : X \to Y$ such that $f(x) = y$. Indeed, for any monad $\mathbf{M}$, there is category $\mathbf{M}{-}\Alg$ of $\mathbf{M}$-algebras, defined as follows:
+
+\begin{defn}
+    Let $\C$ be a category, and let $\mathbf{M} = (M,\mu,\eta)$ be a monad on $\C$. The category $\mathbf{M}{-}\Alg$ of $\mathbf{M}$-algebras has:
+    \begin{itemize}
+        \item Objects $\mathbf{M}$-algebras;
+        \item Morphisms $(X,e) \to (Y,f)$ those morphisms $\varphi : X \to Y$ such that
+        \[\begin{tikzcd}
+        M(X) \rar["M(\varphi)"] \dar["e"] & M(Y) \dar["f"] \\
+        X \rar["\varphi"] & Y
+        \end{tikzcd}\]
+        commutes;
+        \item Composition inherited from $\C$.
+    \end{itemize}
+\end{defn}
+
+We can now enhance our previous proposition about free $\mathbf{M}$-algebras: the free construction is (as you might expect) left adjoint to a forgetful functor.
+
+\begin{prop}
+Let $\mathbf{M} = (M,\mu,\eta)$ be a monad on a category $\C$. There is an adjunction
+% https://q.uiver.app/?q=WzAsMixbMCwwLCJcXG1hdGhiZntNfXstfVxcbWF0aHNme2FsZ30iXSxbMCwxLCJcXEMiXSxbMCwxLCJVX3tcXG1hdGhiZntNfX0iLDAseyJvZmZzZXQiOi0yfV0sWzEsMCwiRl97XFxtYXRoYmZ7TX19IiwwLHsib2Zmc2V0IjotMn1dXQ==
+\[\begin{tikzcd}[ampersand replacement=\&]
+	{\mathbf{M}{-}\Alg} \\
+	\C
+	\arrow["{U_{\mathbf{M}}}", shift left=2, from=1-1, to=2-1]
+	\arrow["{F_{\mathbf{M}}}", shift left=2, from=2-1, to=1-1]
+\end{tikzcd}\]
+where $U_{\mathbf{M}} : \mathbf{M}{-}\Alg \to \C$ is the forgetful functor $(X,e) \mapsto X$ and $F_{\mathbf{M}} : \C \to \mathbf{M}{-}\Alg$ is the free functor $X \mapsto (M(x), \mu_X)$.
+\end{prop}
+\begin{proof}
+    It is left as an exercise to state and check the functoriality of $U_{\mathbf{M}}$ and $F_{\mathbf{M}}$. We will verify the adjunction.
+    
+    So, let $X \in \C$ and $(Y,f) \in \mathbf{M}{-}\Alg$ be arbitrary. Given any morphism $t : X \to Y$ in $\C$, we claim that the composition $M(X) \xrightarrow{M(t)} M(Y) \xrightarrow{f} Y$ is a morphism $F_{\mathbf{M}}(X) = (M(X),\mu_X) \to (Y,f)$ in $\mathbf{M}{-}\Alg$. For this, we must check that
+    % https://q.uiver.app/?q=WzAsNCxbMCwwLCJNKE0oWCkpIl0sWzEsMCwiTShZKSJdLFswLDEsIk0oWCkiXSxbMSwxLCJZIl0sWzAsMSwiTShmIFxcY2lyYyBNKFxcdmFycGhpKSkiXSxbMCwyLCJcXG11X1giLDJdLFsyLDMsImYgXFxjaXJjIE0oXFx2YXJwaGkpIiwyXSxbMSwzLCJmIl1d
+    \[\begin{tikzcd}[ampersand replacement=\&]
+    	{M(M(X))} \& {M(Y)} \\
+    	{M(X)} \& Y
+    	\arrow["{M(f \circ M(t))}", from=1-1, to=1-2]
+    	\arrow["{\mu_X}"', from=1-1, to=2-1]
+    	\arrow["{f \circ M(t)}"', from=2-1, to=2-2]
+    	\arrow["f", from=1-2, to=2-2]
+    \end{tikzcd}\]
+    commutes. This square can be decomposed into two:
+    % https://q.uiver.app/?q=WzAsNixbMCwwLCJNKE0oWCkpIl0sWzAsMSwiTShYKSJdLFsxLDAsIk0oTShZKSkiXSxbMSwxLCJNKFkpIl0sWzIsMCwiTShZKSJdLFsyLDEsIlkiXSxbMCwxLCJcXG11X1giLDJdLFswLDIsIk0oTShcXHZhcnBoaSkpIl0sWzEsMywiTShcXHZhcnBoaSkiLDJdLFsyLDMsIlxcbXVfWSJdLFsyLDQsIk0oZikiXSxbNCw1LCJmIl0sWzMsNSwiZiIsMl1d
+    \[\begin{tikzcd}[ampersand replacement=\&]
+    	{M(M(X))} \& {M(M(Y))} \& {M(Y)} \\
+    	{M(X)} \& {M(Y)} \& Y
+    	\arrow["{\mu_X}"', from=1-1, to=2-1]
+    	\arrow["{M(M(t))}", from=1-1, to=1-2]
+    	\arrow["{M(t)}"', from=2-1, to=2-2]
+    	\arrow["{\mu_Y}", from=1-2, to=2-2]
+    	\arrow["{M(f)}", from=1-2, to=1-3]
+    	\arrow["f", from=1-3, to=2-3]
+    	\arrow["f"', from=2-2, to=2-3]
+    \end{tikzcd}\]
+    The left-hand square commutes by naturality of $\mu$, and the right-hand square commutes because $(Y,f)$ is an $\mathbf{M}$-algebra. So, $f \circ M(t)$ is a morphism $F_{\mathbf{M}}(X) \to (Y,f)$ in $\mathbf{M}{-}\Alg$. This defines a function
+    \[\alpha_{X,(Y,f)} : \Hom_{\C}(X,U_{\mathbf{M}}(Y,f)) \to \Hom_{\mathbf{M}{-}\Alg}(F_{\mathbf{M}}(X),(Y,f)).\]
+    There is also a function
+    \[\beta_{X,(Y,f)} : \Hom_{\mathbf{M}{-}\Alg}(F_{\mathbf{M}}(X),(Y,f)) \to \Hom_{\C}(X,U_{\mathbf{M}}(Y,f))\]
+    given by $\varphi \mapsto \varphi \circ \eta_X$.
+    Now, given any morphism $\varphi : F_{\mathbf{M}}(X) \to (Y,f)$ in $\mathbf{M}{-}\Alg$, we consider the diagram
+    % https://q.uiver.app/?q=WzAsNSxbMCwwLCJNKFgpIl0sWzEsMCwiTShNKFgpKSJdLFsyLDAsIk0oWSkiXSxbMiwxLCJZIl0sWzEsMSwiTShYKSJdLFswLDEsIk0oXFxldGFfWCkiXSxbMSwyLCJNKFxcdmFycGhpKSJdLFsyLDMsImYiXSxbMSw0LCJcXG11X1giXSxbMCw0LCJcXGlkX3tNKFgpfSIsMl0sWzQsMywiXFx2YXJwaGkiLDJdXQ==
+    \[\begin{tikzcd}[ampersand replacement=\&]
+    	{M(X)} \& {M(M(X))} \& {M(Y)} \\
+    	\& {M(X)} \& Y
+    	\arrow["{M(\eta_X)}", from=1-1, to=1-2]
+    	\arrow["{M(\varphi)}", from=1-2, to=1-3]
+    	\arrow["f", from=1-3, to=2-3]
+    	\arrow["{\mu_X}", from=1-2, to=2-2]
+    	\arrow["{\id_{M(X)}}"', from=1-1, to=2-2]
+    	\arrow["\varphi"', from=2-2, to=2-3]
+    \end{tikzcd}\]
+    The left-hand triangle commutes because $\mathbf{M}$ is a monad, and the right-hand square commutes because $\varphi : F_{\mathbf{M}}(X) \to (Y,f)$ is an $\mathbf{M}$-algebra homomorphism. Thus,
+    \[\alpha_{X,(Y,f)}(\beta_{X,(Y,f)}(\varphi)) = f \circ M(\varphi \circ \eta_X) = f \circ M(\varphi) \circ M(\eta_X) = \varphi.\]
+    Likewise, for any $t \in \Hom_{\C}(X,U_{\mathbf{M}}(Y,f))$, we consider the diagram
+    % https://q.uiver.app/?q=WzAsNSxbMCwwLCJYIl0sWzEsMCwiWSJdLFsyLDEsIlkiXSxbMCwxLCJNKFgpIl0sWzEsMSwiTShZKSJdLFswLDEsInQiXSxbMSwyLCJcXGlkX1kiXSxbMCwzLCJcXGV0YV9YIiwyXSxbMyw0LCJNKHQpIiwyXSxbMSw0LCJcXGV0YV9ZIiwyXSxbNCwyLCJmIiwyXV0=
+    \[\begin{tikzcd}[ampersand replacement=\&]
+    	X \& Y \\
+    	{M(X)} \& {M(Y)} \& Y
+    	\arrow["t", from=1-1, to=1-2]
+    	\arrow["{\id_Y}", from=1-2, to=2-3]
+    	\arrow["{\eta_X}"', from=1-1, to=2-1]
+    	\arrow["{M(t)}"', from=2-1, to=2-2]
+    	\arrow["{\eta_Y}"', from=1-2, to=2-2]
+    	\arrow["f"', from=2-2, to=2-3]
+    \end{tikzcd}\]
+    The left-hand square commutes by naturality of $\eta$, and the right-hand triangle commutes because $(Y,f)$ is an $\mathbf{M}$-algebra. Thus,
+    \[\beta_{X,(Y,f)}(\alpha_{X,(Y,f)}(t)) = f \circ M(t) \circ \eta_X = f.\]
+    Since $t$ and $\varphi$ are arbitrary, we conclude that $\alpha_{X,(Y,f)}$ is an isomorphism. Finally, we must check that the transformation $\alpha = (\alpha_{X,(Y,f)})_{X,(Y,f)}$ is natural in both $X$ and $(Y,f)$. So, let $h : X' \to X$ and $\psi : (Y,f) \to (Y',f')$ be arbitrary morphisms. Then we wish to show that
+    % https://q.uiver.app/?q=WzAsNCxbMCwwLCJcXEhvbV97XFxDfShYLFVfe1xcbWF0aGJme019fShZLGYpKSJdLFsyLDAsIlxcSG9tX3tcXG1hdGhiZntNfXstfVxcQWxnfShGX3tcXG1hdGhiZntNfX0oWCksKFksZikpIl0sWzAsMiwiXFxIb21fe1xcQ30oWCcsVV97XFxtYXRoYmZ7TX19KFknLGYnKSkiXSxbMiwyLCJcXEhvbV97XFxtYXRoYmZ7TX17LX1cXEFsZ30oRl97XFxtYXRoYmZ7TX19KFgnKSwoWScsZicpKSJdLFswLDEsIlxcYWxwaGFfe1gsKFksZil9Il0sWzAsMiwiKGgsVV97XFxtYXRoYmZ7TX19KFxccHNpKSlfKiIsMl0sWzIsMywiXFxhbHBoYV97WCcsKFknLGYnKSl9IiwyXSxbMSwzLCIoRl97XFxtYXRoYmZ7TX19KGgpLFxccHNpKV8qIl1d
+    \[\begin{tikzcd}[ampersand replacement=\&]
+    	{\Hom_{\C}(X,U_{\mathbf{M}}(Y,f))} \&\& {\Hom_{\mathbf{M}{-}\Alg}(F_{\mathbf{M}}(X),(Y,f))} \\
+    	\\
+    	{\Hom_{\C}(X',U_{\mathbf{M}}(Y',f'))} \&\& {\Hom_{\mathbf{M}{-}\Alg}(F_{\mathbf{M}}(X'),(Y',f'))}
+    	\arrow["{\alpha_{X,(Y,f)}}", from=1-1, to=1-3]
+    	\arrow["{(h,U_{\mathbf{M}}(\psi))_*}"', from=1-1, to=3-1]
+    	\arrow["{\alpha_{X',(Y',f'))}}"', from=3-1, to=3-3]
+    	\arrow["{(F_{\mathbf{M}}(h),\psi)_*}", from=1-3, to=3-3]
+    \end{tikzcd}\]
+    commutes. So, let $t \in {\Hom_{\C}(X,U_{\mathbf{M}}(Y,f))}$ be arbitrary. Then
+    \[(F_{\mathbf{M}}(h),\psi)_*(\alpha_{X,(Y,f)}(t)) = \psi \circ (f \circ M(t)) \circ M(h) = \psi \circ f \circ M(t \circ h)\]
+    and
+    \[\alpha_{X',(Y',f'))}((h,U_{\mathbf{M}}(\psi))_*(t)) = f' \circ M(\psi \circ t \circ h) = f \circ M(\psi) \circ M(t \circ h).\]
+    Since $\psi : (Y,f) \to (Y',f')$ is a morphism in $\mathbf{M}{-}\Alg$, we have $\psi \circ f = f' \circ M(\psi)$, so indeed this square commutes.
+\end{proof}
+
+This proposition shows that every monad gives rise to an adjunction. In fact, every monad gives rise to \emph{two} natural adjunctions, and in the other direction every adjunction gives rise to a monad! In the next section, we'll investigate this phenomenon.
 
 \section{Adjunctions}
 
