@@ -18,8 +18,11 @@
 
 \newcommand{\C}{\mathsf{C}}
 \newcommand{\D}{\mathsf{D}}
+\newcommand{\M}{\mathbf{M}}
+\newcommand{\ZZ}{\mathbb{Z}}
 \DeclareMathOperator{\id}{id}
 \newcommand{\Alg}{\mathsf{Alg}}
+\newcommand{\Free}{\mathsf{Free}}
 \DeclareMathOperator{\Hom}{Hom}
 
 \title{Compact Hausdorff Spaces are Algebraic Objects}
@@ -38,14 +41,14 @@ In this document, we'll learn the basic theory of monads, and come to an interes
 
 \section{Motivating Example}
 
-Let $X$ be a set. The \emph{free abelian group} on $X$ consists of the formal $\mathbb{Z}$-linear combinations of elements of $X$, which comes equipped with a ``formal sum'' operation (we can add any two linear combinations to produce a new linear combination). Let's denote this set of formal $\mathbb{Z}$-linear combinations by $T(X)$ -- to be clear, $T(X)$ is just the set; we are not remembering the formal sum operation!
+Let $X$ be a set. The \emph{free abelian group} on $X$ consists of the formal $\ZZ$-linear combinations of elements of $X$, which comes equipped with a ``formal sum'' operation (we can add any two linear combinations to produce a new linear combination). Let's denote this set of formal $\ZZ$-linear combinations by $T(X)$ -- to be clear, $T(X)$ is just the set; we are not remembering the formal sum operation!
 
 Now, this formal sum operation can be made a bit more general: instead of just adding two linear combinations, we can just as well interpret any linear combination of linear combinations! This gives a function
 \[\mu_X : T(T(X)) \to T(X).\]
 
 For example, if $X = \{a,b\}$, then $a+b$ and $2a-b$ are elements of $T(X)$, and $2(a+b)-3(2a-b)$ is an element of $T(T(X))$. In this example, $$\mu_X(2(a+b)-3(2a-b)) = -4a+5b.$$
 
-It is not just free abelian groups in which we can talk about $\mathbb{Z}$-linear combinations. In fact, for \emph{any} abelian group $(A,*)$, we can use the operation $*$ to evaluate formal $\mathbb{Z}$-linear combinations of elements of $A$. In other words, we get a function $\varepsilon_A : T(A) \to A$ which encodes the group operation of $(A,*)$, just as $\mu_X$ encoded the formal sum operation on $T(X)$.
+It is not just free abelian groups in which we can talk about $\ZZ$-linear combinations. In fact, for \emph{any} abelian group $(A,*)$, we can use the operation $*$ to evaluate formal $\ZZ$-linear combinations of elements of $A$. In other words, we get a function $\varepsilon_A : T(A) \to A$ which encodes the group operation of $(A,*)$, just as $\mu_X$ encoded the formal sum operation on $T(X)$.
 
 We can also try to go the other way -- for any set $Y$ and any function $e : T(Y) \to Y$, we may try to produce an abelian group operation $*$ on $Y$ as follows:
 \[a * b = e(a + b).\]
@@ -58,7 +61,7 @@ Now $*$ certainly defines a binary operation on $Y$, but it may or may not be an
     \item Identity
     \item Inverses
 \end{enumerate}
-This is quite a lot to check! Writing all of this out in terms of $e$ and formal $\mathbb{Z}$-linear combinations would be a pain. However, there is a nice characterization of when $*$ is an abelian group operation: $e$ simply needs to respect linear combinations of linear combinations! Precisely:
+This is quite a lot to check! Writing all of this out in terms of $e$ and formal $\ZZ$-linear combinations would be a pain. However, there is a nice characterization of when $*$ is an abelian group operation: $e$ simply needs to respect linear combinations of linear combinations! Precisely:
 
 \begin{prop}
 $*$ is an abelian group operation on $Y$ if and only if the following diagram commutes:
@@ -66,7 +69,7 @@ $*$ is an abelian group operation on $Y$ if and only if the following diagram co
 T(T(Y)) \rar["\mu_Y"] \dar["T(e)"] & T(Y) \dar["e"] \\
 T(Y) \rar["e"] & Y
 \end{tikzcd}\]
-where $T(e)$ is the function $T(T(Y)) \to T(Y)$ defined by sending a formal linear combination $a_1 f_1 + \dots + a_n f_n$ (where $a_1, \dots, a_n \in \mathbb{Z}$ and $f_1, \dots, f_n \in T(Y)$) to $a_1 e(f_1) + \dots + a_n e(f_n)$.
+where $T(e)$ is the function $T(T(Y)) \to T(Y)$ defined by sending a formal linear combination $a_1 f_1 + \dots + a_n f_n$ (where $a_1, \dots, a_n \in \ZZ$ and $f_1, \dots, f_n \in T(Y)$) to $a_1 e(f_1) + \dots + a_n e(f_n)$.
 \end{prop}
 
 Let's unpack the diagram:
@@ -147,12 +150,12 @@ Equivalently, if you're the kind of person who prefers this: a monad is a monoid
     \item Let $B : \mathsf{Top} \to \mathsf{Top}$ be the functor which sends a space $X$ to the space $B(X) := X \amalg \{*\}$ and which sends a morphism $f : X \to Y$ to the morphism $X \amalg \{*\} \to Y \amalg \{*\}$ given by $x \mapsto f(x)$ for $x \in X$ and $* \mapsto *$. There is a natural inclusion $\eta_X : X \to B(X)$, and there is a natural map $B(B(X)) = (X \amalg \{*\}) \amalg \{*\} \to B(X)$ given by sending both copies of $*$ to the same point $* \in B(X)$. The triple $(B,\mu,\eta)$ is a monad on $\mathsf{Top}$.
     \item The above example generalizes: simply replace $\mathsf{Top}$ with any category which has binary coproducts and a terminal object.
     \item Let $X$ be a topological space, and let $\mathcal{P}(X)$ denote the power set of $X$, viewed as a poset category. Let $\operatorname{cl} : \mathcal{P}(X) \to \mathcal{P}(X)$ be the functor given by $\operatorname{cl}(A) = \overline{A}$. There is an inclusion $\eta_A : A \to \overline{A}$ for all $A \subseteq X$, and an inclusion (actually an equality) $\mu_A : \overline{\overline{A}} \to \overline{A}$ for all $A \subseteq X$. The triple $(\operatorname{cl}, \eta, \mu)$ is a monad on $\mathcal{P}(X)$.
-    \item Let $P : \mathsf{Quiv} \to \mathsf{Quiv}$ be the functor which sends a quiver $Q$ to its path quiver $P(Q)$ (and does the appropriate thing to quiver morphisms). There is a natural map $\eta_Q : Q \to P(Q)$ which sends each vertex of $Q$ to the empty path starting at $Q$ and edge of $Q$ to the singleton path consisting of that edge. There is also a natural map $\mu_Q : P(P(Q)) \to P(Q)$ which sends a path of paths to its concatenation. The triple $(P,\mu,\eta)$ is a monad on $\mathsf{Quiv}$.
+    \item Let $P : \mathsf{Quiv} \to \mathsf{Quiv}$ be the functor which sends a quiver $Q$ to its path quiver $P(Q)$ (and sends a quiver morphism to its natural action on paths). There is a natural map $\eta_Q : Q \to P(Q)$ which sends each vertex of $Q$ to the empty path starting at $Q$ and edge of $Q$ to the singleton path consisting of that edge. There is also a natural map $\mu_Q : P(P(Q)) \to P(Q)$ which sends a path of paths to its concatenation. The triple $(P,\mu,\eta)$ is a monad on $\mathsf{Quiv}$.
 \end{enumerate}
 \end{examples}
 
 \begin{defn}
-Let $\mathbf{M} = (M,\mu,\eta)$ be a monad on $\C$. An \emph{algebra} over $\mathbf{M}$ (aka an $\mathbf{M}$-algebra) is a pair $(X,e)$, where
+Let $\M = (M,\mu,\eta)$ be a monad on $\C$. An \emph{algebra} over $\M$ (aka an $\M$-algebra) is a pair $(X,e)$, where
 \begin{enumerate}[label = (\roman*.)]
     \item $X$ is an object of $\C$;
     \item $e : M(X) \to X$ is a morphism in $\C$;
@@ -196,7 +199,7 @@ Let $\mathbf{M} = (M,\mu,\eta)$ be a monad on $\C$. An \emph{algebra} over $\mat
 We now come to our first proposition about monads, which we saw a special case of earlier:
 
 \begin{prop}
-Let $\mathbf{M} = (M, \mu, \eta)$ be a monad on a category $\C$. For each object $X$ of $\C$, $(M(X), \mu_X)$ is an $\mathbf{M}$-algebra, called the \emph{free $\mathbf{M}$-algebra on $X$}.
+Let $\M = (M, \mu, \eta)$ be a monad on a category $\C$. For each object $X$ of $\C$, $(M(X), \mu_X)$ is an $\M$-algebra, called the \emph{free $\M$-algebra on $X$}.
 \end{prop}
 
 \begin{proof}
@@ -226,8 +229,8 @@ We summarize these examples of monads and their algebras in the following table:
     \centering
     \def\arraystretch{1.5}
     \begin{tabular}{c|c|c}
-         $\C$ & $\mathbf{M}$ & $\mathbf{M}$-algebras \\ \hline
-         $\mathsf{Set}$ & formal $\mathbb{Z}$-linear combinations & abelian groups \\
+         $\C$ & $\M$ & $\M$-algebras \\ \hline
+         $\mathsf{Set}$ & formal $\ZZ$-linear combinations & abelian groups \\
          $\mathsf{Ab}$ & \makecell{$R \otimes {-}$ \\ {\color{gray} ($R \in \mathsf{Ring}$)}}  & left $R$-modules \\
          $\mathsf{Set}$ & power set & complete semilattices \\
          $\mathsf{Set}$ & finite strings & monoids \\
@@ -236,16 +239,16 @@ We summarize these examples of monads and their algebras in the following table:
          \makecell{$\mathcal{P}(X)$ \\ {\color{gray} ($X \in \mathsf{Top}$)}} & closure & closed subsets of $X$ \\
          $\mathsf{Quiv}$ & paths & small categories
     \end{tabular}
-    \caption{Examples of categories $\C$, monads $\mathbf{M}$ on $\C$, and characterizations of $\mathbf{M}$-algebras.}
+    \caption{Examples of categories $\C$, monads $\M$ on $\C$, and characterizations of $\M$-algebras.}
     \label{table:examples:monads-and-algebras}
 \end{table}
 
-For each of these examples, there is a familiar category of $\mathbf{M}$-algebras. For example, a morphism of pointed spaces $(X,x) \to (Y,y)$ is a morphism $f : X \to Y$ such that $f(x) = y$. Indeed, for any monad $\mathbf{M}$, there is category $\mathbf{M}{-}\Alg$ of $\mathbf{M}$-algebras, defined as follows:
+For each of these examples, there is a familiar category of $\M$-algebras. For example, a morphism of pointed spaces $(X,x) \to (Y,y)$ is a morphism $f : X \to Y$ such that $f(x) = y$. Indeed, for any monad $\M$, there is category $\M{-}\Alg$ of $\M$-algebras, defined as follows:
 
 \begin{defn}
-    Let $\C$ be a category, and let $\mathbf{M} = (M,\mu,\eta)$ be a monad on $\C$. The category $\mathbf{M}{-}\Alg$ of $\mathbf{M}$-algebras has:
+    Let $\C$ be a category, and let $\M = (M,\mu,\eta)$ be a monad on $\C$. The category $\M{-}\Alg$ of $\M$-algebras has:
     \begin{itemize}
-        \item Objects $\mathbf{M}$-algebras;
+        \item Objects $\M$-algebras;
         \item Morphisms $(X,e) \to (Y,f)$ those morphisms $\varphi : X \to Y$ such that
         \[\begin{tikzcd}
         M(X) \rar["M(\varphi)"] \dar["e"] & M(Y) \dar["f"] \\
@@ -256,23 +259,23 @@ For each of these examples, there is a familiar category of $\mathbf{M}$-algebra
     \end{itemize}
 \end{defn}
 
-We can now enhance our previous proposition about free $\mathbf{M}$-algebras: the free construction is (as you might expect) left adjoint to a forgetful functor.
+We can now enhance our previous proposition about free $\M$-algebras: the free construction is (as you might expect) left adjoint to a forgetful functor.
 
-\begin{prop}
-Let $\mathbf{M} = (M,\mu,\eta)$ be a monad on a category $\C$. There is an adjunction
+\begin{prop}\label{prop:EM-adjunction}
+Let $\M = (M,\mu,\eta)$ be a monad on a category $\C$. There is an adjunction
 % https://q.uiver.app/?q=WzAsMixbMCwwLCJcXG1hdGhiZntNfXstfVxcbWF0aHNme2FsZ30iXSxbMCwxLCJcXEMiXSxbMCwxLCJVX3tcXG1hdGhiZntNfX0iLDAseyJvZmZzZXQiOi0yfV0sWzEsMCwiRl97XFxtYXRoYmZ7TX19IiwwLHsib2Zmc2V0IjotMn1dXQ==
 \[\begin{tikzcd}[ampersand replacement=\&]
-	{\mathbf{M}{-}\Alg} \\
+	{\M{-}\Alg} \\
 	\C
-	\arrow["{U_{\mathbf{M}}}", shift left=2, from=1-1, to=2-1]
-	\arrow["{F_{\mathbf{M}}}", shift left=2, from=2-1, to=1-1]
+	\arrow["{U_{\M}}", shift left=2, from=1-1, to=2-1]
+	\arrow["{F_{\M}}", shift left=2, from=2-1, to=1-1]
 \end{tikzcd}\]
-where $U_{\mathbf{M}} : \mathbf{M}{-}\Alg \to \C$ is the forgetful functor $(X,e) \mapsto X$ and $F_{\mathbf{M}} : \C \to \mathbf{M}{-}\Alg$ is the free functor $X \mapsto (M(x), \mu_X)$.
+where $U_{\M} : \M{-}\Alg \to \C$ is the forgetful functor $(X,e) \mapsto X$ and $F_{\M} : \C \to \M{-}\Alg$ is the free functor $X \mapsto (M(x), \mu_X)$.
 \end{prop}
 \begin{proof}
-    It is left as an exercise to state and check the functoriality of $U_{\mathbf{M}}$ and $F_{\mathbf{M}}$. We will verify the adjunction.
+    It is left as an exercise to state and check the functoriality of $U_{\M}$ and $F_{\M}$. We will verify the adjunction.
     
-    So, let $X \in \C$ and $(Y,f) \in \mathbf{M}{-}\Alg$ be arbitrary. Given any morphism $t : X \to Y$ in $\C$, we claim that the composition $M(X) \xrightarrow{M(t)} M(Y) \xrightarrow{f} Y$ is a morphism $F_{\mathbf{M}}(X) = (M(X),\mu_X) \to (Y,f)$ in $\mathbf{M}{-}\Alg$. For this, we must check that
+    So, let $X \in \C$ and $(Y,f) \in \M{-}\Alg$ be arbitrary. Given any morphism $t : X \to Y$ in $\C$, we claim that the composition $M(X) \xrightarrow{M(t)} M(Y) \xrightarrow{f} Y$ is a morphism $F_{\M}(X) = (M(X),\mu_X) \to (Y,f)$ in $\M{-}\Alg$. For this, we must check that
     % https://q.uiver.app/?q=WzAsNCxbMCwwLCJNKE0oWCkpIl0sWzEsMCwiTShZKSJdLFswLDEsIk0oWCkiXSxbMSwxLCJZIl0sWzAsMSwiTShmIFxcY2lyYyBNKFxcdmFycGhpKSkiXSxbMCwyLCJcXG11X1giLDJdLFsyLDMsImYgXFxjaXJjIE0oXFx2YXJwaGkpIiwyXSxbMSwzLCJmIl1d
     \[\begin{tikzcd}[ampersand replacement=\&]
     	{M(M(X))} \& {M(Y)} \\
@@ -295,12 +298,12 @@ where $U_{\mathbf{M}} : \mathbf{M}{-}\Alg \to \C$ is the forgetful functor $(X,e
     	\arrow["f", from=1-3, to=2-3]
     	\arrow["f"', from=2-2, to=2-3]
     \end{tikzcd}\]
-    The left-hand square commutes by naturality of $\mu$, and the right-hand square commutes because $(Y,f)$ is an $\mathbf{M}$-algebra. So, $f \circ M(t)$ is a morphism $F_{\mathbf{M}}(X) \to (Y,f)$ in $\mathbf{M}{-}\Alg$. This defines a function
-    \[\alpha_{X,(Y,f)} : \Hom_{\C}(X,U_{\mathbf{M}}(Y,f)) \to \Hom_{\mathbf{M}{-}\Alg}(F_{\mathbf{M}}(X),(Y,f)).\]
+    The left-hand square commutes by naturality of $\mu$, and the right-hand square commutes because $(Y,f)$ is an $\M$-algebra. So, $f \circ M(t)$ is a morphism $F_{\M}(X) \to (Y,f)$ in $\M{-}\Alg$. This defines a function
+    \[\alpha_{X,(Y,f)} : \Hom_{\C}(X,U_{\M}(Y,f)) \to \Hom_{\M{-}\Alg}(F_{\M}(X),(Y,f)).\]
     There is also a function
-    \[\beta_{X,(Y,f)} : \Hom_{\mathbf{M}{-}\Alg}(F_{\mathbf{M}}(X),(Y,f)) \to \Hom_{\C}(X,U_{\mathbf{M}}(Y,f))\]
+    \[\beta_{X,(Y,f)} : \Hom_{\M{-}\Alg}(F_{\M}(X),(Y,f)) \to \Hom_{\C}(X,U_{\M}(Y,f))\]
     given by $\varphi \mapsto \varphi \circ \eta_X$.
-    Now, given any morphism $\varphi : F_{\mathbf{M}}(X) \to (Y,f)$ in $\mathbf{M}{-}\Alg$, we consider the diagram
+    Now, given any morphism $\varphi : F_{\M}(X) \to (Y,f)$ in $\M{-}\Alg$, we consider the diagram
     % https://q.uiver.app/?q=WzAsNSxbMCwwLCJNKFgpIl0sWzEsMCwiTShNKFgpKSJdLFsyLDAsIk0oWSkiXSxbMiwxLCJZIl0sWzEsMSwiTShYKSJdLFswLDEsIk0oXFxldGFfWCkiXSxbMSwyLCJNKFxcdmFycGhpKSJdLFsyLDMsImYiXSxbMSw0LCJcXG11X1giXSxbMCw0LCJcXGlkX3tNKFgpfSIsMl0sWzQsMywiXFx2YXJwaGkiLDJdXQ==
     \[\begin{tikzcd}[ampersand replacement=\&]
     	{M(X)} \& {M(M(X))} \& {M(Y)} \\
@@ -312,9 +315,9 @@ where $U_{\mathbf{M}} : \mathbf{M}{-}\Alg \to \C$ is the forgetful functor $(X,e
     	\arrow["{\id_{M(X)}}"', from=1-1, to=2-2]
     	\arrow["\varphi"', from=2-2, to=2-3]
     \end{tikzcd}\]
-    The left-hand triangle commutes because $\mathbf{M}$ is a monad, and the right-hand square commutes because $\varphi : F_{\mathbf{M}}(X) \to (Y,f)$ is an $\mathbf{M}$-algebra homomorphism. Thus,
+    The left-hand triangle commutes because $\M$ is a monad, and the right-hand square commutes because $\varphi : F_{\M}(X) \to (Y,f)$ is an $\M$-algebra homomorphism. Thus,
     \[\alpha_{X,(Y,f)}(\beta_{X,(Y,f)}(\varphi)) = f \circ M(\varphi \circ \eta_X) = f \circ M(\varphi) \circ M(\eta_X) = \varphi.\]
-    Likewise, for any $t \in \Hom_{\C}(X,U_{\mathbf{M}}(Y,f))$, we consider the diagram
+    Likewise, for any $t \in \Hom_{\C}(X,U_{\M}(Y,f))$, we consider the diagram
     % https://q.uiver.app/?q=WzAsNSxbMCwwLCJYIl0sWzEsMCwiWSJdLFsyLDEsIlkiXSxbMCwxLCJNKFgpIl0sWzEsMSwiTShZKSJdLFswLDEsInQiXSxbMSwyLCJcXGlkX1kiXSxbMCwzLCJcXGV0YV9YIiwyXSxbMyw0LCJNKHQpIiwyXSxbMSw0LCJcXGV0YV9ZIiwyXSxbNCwyLCJmIiwyXV0=
     \[\begin{tikzcd}[ampersand replacement=\&]
     	X \& Y \\
@@ -326,24 +329,24 @@ where $U_{\mathbf{M}} : \mathbf{M}{-}\Alg \to \C$ is the forgetful functor $(X,e
     	\arrow["{\eta_Y}"', from=1-2, to=2-2]
     	\arrow["f"', from=2-2, to=2-3]
     \end{tikzcd}\]
-    The left-hand square commutes by naturality of $\eta$, and the right-hand triangle commutes because $(Y,f)$ is an $\mathbf{M}$-algebra. Thus,
+    The left-hand square commutes by naturality of $\eta$, and the right-hand triangle commutes because $(Y,f)$ is an $\M$-algebra. Thus,
     \[\beta_{X,(Y,f)}(\alpha_{X,(Y,f)}(t)) = f \circ M(t) \circ \eta_X = f.\]
     Since $t$ and $\varphi$ are arbitrary, we conclude that $\alpha_{X,(Y,f)}$ is an isomorphism. Finally, we must check that the transformation $\alpha = (\alpha_{X,(Y,f)})_{X,(Y,f)}$ is natural in both $X$ and $(Y,f)$. So, let $h : X' \to X$ and $\psi : (Y,f) \to (Y',f')$ be arbitrary morphisms. Then we wish to show that
     % https://q.uiver.app/?q=WzAsNCxbMCwwLCJcXEhvbV97XFxDfShYLFVfe1xcbWF0aGJme019fShZLGYpKSJdLFsyLDAsIlxcSG9tX3tcXG1hdGhiZntNfXstfVxcQWxnfShGX3tcXG1hdGhiZntNfX0oWCksKFksZikpIl0sWzAsMiwiXFxIb21fe1xcQ30oWCcsVV97XFxtYXRoYmZ7TX19KFknLGYnKSkiXSxbMiwyLCJcXEhvbV97XFxtYXRoYmZ7TX17LX1cXEFsZ30oRl97XFxtYXRoYmZ7TX19KFgnKSwoWScsZicpKSJdLFswLDEsIlxcYWxwaGFfe1gsKFksZil9Il0sWzAsMiwiKGgsVV97XFxtYXRoYmZ7TX19KFxccHNpKSlfKiIsMl0sWzIsMywiXFxhbHBoYV97WCcsKFknLGYnKSl9IiwyXSxbMSwzLCIoRl97XFxtYXRoYmZ7TX19KGgpLFxccHNpKV8qIl1d
     \[\begin{tikzcd}[ampersand replacement=\&]
-    	{\Hom_{\C}(X,U_{\mathbf{M}}(Y,f))} \&\& {\Hom_{\mathbf{M}{-}\Alg}(F_{\mathbf{M}}(X),(Y,f))} \\
+    	{\Hom_{\C}(X,U_{\M}(Y,f))} \&\& {\Hom_{\M{-}\Alg}(F_{\M}(X),(Y,f))} \\
     	\\
-    	{\Hom_{\C}(X',U_{\mathbf{M}}(Y',f'))} \&\& {\Hom_{\mathbf{M}{-}\Alg}(F_{\mathbf{M}}(X'),(Y',f'))}
+    	{\Hom_{\C}(X',U_{\M}(Y',f'))} \&\& {\Hom_{\M{-}\Alg}(F_{\M}(X'),(Y',f'))}
     	\arrow["{\alpha_{X,(Y,f)}}", from=1-1, to=1-3]
-    	\arrow["{(h,U_{\mathbf{M}}(\psi))_*}"', from=1-1, to=3-1]
+    	\arrow["{(h,U_{\M}(\psi))_*}"', from=1-1, to=3-1]
     	\arrow["{\alpha_{X',(Y',f'))}}"', from=3-1, to=3-3]
-    	\arrow["{(F_{\mathbf{M}}(h),\psi)_*}", from=1-3, to=3-3]
+    	\arrow["{(F_{\M}(h),\psi)_*}", from=1-3, to=3-3]
     \end{tikzcd}\]
-    commutes. So, let $t \in {\Hom_{\C}(X,U_{\mathbf{M}}(Y,f))}$ be arbitrary. Then
-    \[(F_{\mathbf{M}}(h),\psi)_*(\alpha_{X,(Y,f)}(t)) = \psi \circ (f \circ M(t)) \circ M(h) = \psi \circ f \circ M(t \circ h)\]
+    commutes. So, let $t \in {\Hom_{\C}(X,U_{\M}(Y,f))}$ be arbitrary. Then
+    \[(F_{\M}(h),\psi)_*(\alpha_{X,(Y,f)}(t)) = \psi \circ (f \circ M(t)) \circ M(h) = \psi \circ f \circ M(t \circ h)\]
     and
-    \[\alpha_{X',(Y',f'))}((h,U_{\mathbf{M}}(\psi))_*(t)) = f' \circ M(\psi \circ t \circ h) = f \circ M(\psi) \circ M(t \circ h).\]
-    Since $\psi : (Y,f) \to (Y',f')$ is a morphism in $\mathbf{M}{-}\Alg$, we have $\psi \circ f = f' \circ M(\psi)$, so indeed this square commutes.
+    \[\alpha_{X',(Y',f'))}((h,U_{\M}(\psi))_*(t)) = f' \circ M(\psi \circ t \circ h) = f \circ M(\psi) \circ M(t \circ h).\]
+    Since $\psi : (Y,f) \to (Y',f')$ is a morphism in $\M{-}\Alg$, we have $\psi \circ f = f' \circ M(\psi)$, so indeed this square commutes.
 \end{proof}
 
 This proposition shows that every monad gives rise to an adjunction. In fact, every monad gives rise to \emph{two} natural adjunctions, and in the other direction every adjunction gives rise to a monad! In the next section, we'll investigate this phenomenon.
@@ -352,26 +355,110 @@ This proposition shows that every monad gives rise to an adjunction. In fact, ev
 
 Let $F \dashv G$ be any adjunction between categories $\C$ and $\D$ (that is, $F : \C \to \D$ is left adjoint to $G : \D \to \C$), defined by a unit $\eta : \id_{\C} \to G \circ F$ and counit $\varepsilon : F \circ G \to \id_{\D}$. Then $G \circ F : \C \to \C$ is an endofunctor of $\C$ with a natural monad structure, whose unit map is simply $\eta$ and whose multiplication map is the whiskering
 \[G \circ F \circ G \circ F \xrightarrow{G \circ \varepsilon \circ F} G \circ \id_{\D} \circ F = G \circ F.\]
-In other words, $(G \circ F, G \circ \varepsilon \circ F, \eta)$ is a monad on $\C$. So, every adjunction gives rise to a monad. However, different adjunctions may yield the same monad!
-
-For example, let $F \dashv U$ be the free-forgetful adjunction between $\mathsf{Set}$ and $\mathsf{Ab}$. Then the monad $U \circ F$ is exactly the formal-$\mathbb{Z}$-linear-combination monad discussed in the first section. We can notice that $F(X)$ is always torsion-free, so this adjunction restricts to one between $\mathsf{Set}$ and the full subcategory of $\mathsf{Ab}$ spanned by the torsion-free abelian groups, and this restricted adjunction produces the same monad! And if we wanted, we could restrict even further to the full subcategory of free abelian groups.
-
-For a given monad $\mathbf{M}$, there is some structure to the collection of adjunctions which yield $\mathbf{M}$, which we'll now study.
+In other words, $(G \circ F, G \circ \varepsilon \circ F, \eta)$ is a monad on $\C$. So, every adjunction gives rise to a monad. However, this correspondence is not bijective -- many different adjunctions may yield the same monad! For a fixed monad $\M$, the collection of adjunctions which realize $\M$ has some structure, which we'll now study.
 
 \begin{defn}
-Let $\mathbf{M}$ be a monad on a category $\C$. An \emph{$\mathbf{M}$-adjunction} is an adjunction
-% https://q.uiver.app/?q=WzAsMixbMCwwLCJcXEQiXSxbMCwxLCJcXEMiXSxbMCwxLCJVIiwwLHsib2Zmc2V0IjotMn1dLFsxLDAsIkYiLDAseyJvZmZzZXQiOi0yfV0sWzMsMiwiIiwwLHsibGV2ZWwiOjEsInN0eWxlIjp7Im5hbWUiOiJhZGp1bmN0aW9uIn19XV0=
+Let $\M$ be a monad on a category $\C$. An \emph{$\M$-adjunction} is an adjunction
+% https://q.uiver.app/?q=WzAsMixbMCwwLCJcXEQiXSxbMCwxLCJcXEMiXSxbMCwxLCJHIiwwLHsib2Zmc2V0IjotMn1dLFsxLDAsIkYiLDAseyJvZmZzZXQiOi0yfV0sWzMsMiwiIiwwLHsibGV2ZWwiOjEsInN0eWxlIjp7Im5hbWUiOiJhZGp1bmN0aW9uIn19XV0=
 \[\begin{tikzcd}[ampersand replacement=\&]
 	\D \\
 	\C
-	\arrow[""{name=0, anchor=center, inner sep=0}, "U", shift left=2, from=1-1, to=2-1]
+	\arrow[""{name=0, anchor=center, inner sep=0}, "G", shift left=2, from=1-1, to=2-1]
 	\arrow[""{name=1, anchor=center, inner sep=0}, "F", shift left=2, from=2-1, to=1-1]
 	\arrow["\dashv"{anchor=center}, draw=none, from=1, to=0]
 \end{tikzcd}\]
-such that the monad $(G \circ F, G \circ \varepsilon \circ F, \eta)$ equals $\mathbf{M}$.
+such that the monad $(G \circ F, G \circ \varepsilon \circ F, \eta)$ equals $\M$. We say that $\D$ is the \emph{target category} of the adjunction.
 \end{defn}
 
-The above definition is of course ``evil'', but don't worry about that for now.
+The above definition is of course evil, but don't worry about that for now. Let's consider our favorite example: let $\M$ be the ``formal $\ZZ$-linear combinations'' monad on $\mathsf{Set}$, so that $\M{-}\Alg$ is (equivalent to) the category of abelian groups. There is one $\M$-adjunction that we've already seen, namely $F_{\M} \dashv U_{\M}$ from Proposition~\ref{prop:EM-adjunction}, with target category $\M{-}\Alg$. However, we can notice that the image of $F_{\M}$ lies in the full subcategory of torsion-free abelian groups, and so (co)restricting $F_{\M}$ and $U_{\M}$ to this subcategory does not change the composite $U_{\M} \circ F_{\M}$. Thus, (co)restricting these functors gives a different $\M$-adjunction, with the target category being the category of torsion-free abelian groups. Of course, we can (co)restrict further to the category of free abelian groups to yield yet another $\M$-adjunction! And, even smaller, we can restrict to the image of $F_{\M}$, which consists only of those abelian groups which are equal to the free abelian group on some set.
+
+This is the general story: for any monad $\M$, there is a ``largest possible'' target category for $\M$-adjunctions (namely $\M{-}\Alg$) and a ``smallest possible'' target category (``formally free $\M$-algebras''). Every target category of an $\M$-adjunction will sit between these two in a canonical way.
+
+\begin{defn}
+Let $\M$ be a monad on a category $\C$. $\M{-}\Free$ denotes the image of $F_{\M}$ in $\M{-}\Alg$, i.e. the full subcategory of $\M{-}\Alg$ spanned by the objects $F_{\M}(X)$ for all $X \in \C$.
+\end{defn}
+
+\begin{prop}
+Let $\M$ be a monad on a category $\C$, and let $F \dashv G$ be an $\M$-adjunction with target category $\D$. There are unique functors $I : \M{-}\Free \to D$ and $J : \D \to \M{-}\Alg$ such that the following diagrams commute:
+% https://q.uiver.app/?q=WzAsNCxbMSwxLCJcXEMiXSxbMSwwLCJcXEQiXSxbMCwwLCJcXE17LX1cXEZyZWUiXSxbMiwwLCJcXE17LX1cXEFsZyJdLFswLDIsIkZfe1xcTX0iXSxbMCwxLCJGIiwyXSxbMCwzLCJGX3tcXE19IiwyXSxbMiwxLCJJIiwwLHsib2Zmc2V0IjoxLCJzdHlsZSI6eyJib2R5Ijp7Im5hbWUiOiJkYXNoZWQifX19XSxbMSwzLCJKIiwwLHsib2Zmc2V0IjoxLCJzdHlsZSI6eyJib2R5Ijp7Im5hbWUiOiJkYXNoZWQifX19XV0=
+\[\begin{tikzcd}[ampersand replacement=\&]
+    {\M{-}\Free} \& \D \& {\M{-}\Alg} \\
+    \& \C
+    \arrow["{F_{\M}}", from=2-2, to=1-1]
+    \arrow["F"', from=2-2, to=1-2]
+    \arrow["{F_{\M}}"', from=2-2, to=1-3]
+    \arrow["I", shift right=1, dashed, from=1-1, to=1-2]
+    \arrow["J", shift right=1, dashed, from=1-2, to=1-3]
+\end{tikzcd}\]
+% https://q.uiver.app/?q=WzAsNCxbMSwxLCJcXEMiXSxbMSwwLCJcXEQiXSxbMCwwLCJcXE17LX1cXEZyZWUiXSxbMiwwLCJcXE17LX1cXEFsZyJdLFsyLDEsIkkiLDAseyJvZmZzZXQiOjEsInN0eWxlIjp7ImJvZHkiOnsibmFtZSI6ImRhc2hlZCJ9fX1dLFsxLDMsIkoiLDAseyJvZmZzZXQiOjEsInN0eWxlIjp7ImJvZHkiOnsibmFtZSI6ImRhc2hlZCJ9fX1dLFsyLDAsIlVfe1xcTX0iLDIseyJvZmZzZXQiOi0xfV0sWzEsMCwiRyIsMl0sWzMsMCwiVV97XFxNfSJdXQ==
+\[\begin{tikzcd}[ampersand replacement=\&]
+    {\M{-}\Free} \& \D \& {\M{-}\Alg} \\
+    \& \C
+    \arrow["I", shift right=1, dashed, from=1-1, to=1-2]
+    \arrow["J", shift right=1, dashed, from=1-2, to=1-3]
+    \arrow["{U_{\M}}"', shift left=1, from=1-1, to=2-2]
+    \arrow["G"', from=1-2, to=2-2]
+    \arrow["{U_{\M}}", from=1-3, to=2-2]
+\end{tikzcd}\]
+Moreover, $I$ and $J$ are fully faithful.
+\end{prop}
+We include the proof for completeness.
+\begin{proof}
+    Let $\eta$ and $\varepsilon$ denote the unit and counit (respectively) of $F \dashv G$ (and note that $\eta$ is also the unit of $F_{\M} \dashv U_{\M}$ because $F \dashv G$ is an $\M$-adjunction).
+    
+    First we will construct $I$. Consider some arbitrary object $F_{\M}(X)$ of $\M{-}\Free$. Since we want $I \circ F_{\M} = F$, we must have $I(F_{\M}(X)) = F(X)$. This determines the action of $I$ on objects. To extend this to a functor, we must define a function
+    \[\Hom_{\M{-}\Free}(F_{\M}(X),F_{\M}(Y)) \to \Hom_{\D}(F(X),F(Y))\]
+    for all objects $X,Y \in \C$. In fact, there is a natural bijection between these hom-sets that we can use:
+    \begin{align*}
+        \Hom_{\M{-}\Free}(F_{\M}(X),F_{\M}(Y)) &\cong \Hom_{\C}(X,U_{\M}(F_{\M}(Y))) \\
+        &= \Hom_{\C}(X,G(F(Y))) \\
+        &\cong \Hom_{\D}(F(X),F(Y))
+    \end{align*}
+    Explicitly, this function is
+    \[\varphi \mapsto \varepsilon_{F(Y)} \circ F(U_{\M}(\varphi) \circ \eta_X).\]
+    To check that $I$ is a functor, we consider an arbitrary pair of composable morphisms $\varphi : F_{\M}(X) \to F_{\M}(Y)$ and $\psi : F_{\M}(Y) \to F_{\M}(Z)$ in $\M{-}\Free$. Then
+    \[I(\psi) \circ I(\varphi) = \varepsilon_{F(Z)} \circ F(U_{\M}(\psi) \circ \eta_Y) \circ I(\varphi) = \varepsilon_{F(Z)} \circ F(U_{\M}(\psi)) \circ F(\eta_Y) \circ I(\varphi).\]
+    Now since $I(\varphi)$ is the mate of $U_{\M}(\varphi) \circ \eta_X : X \to G(F(Y))$, we have $F(\eta_Y) \circ I(\varphi) = F(U_{\M}(\varphi) \circ \eta_X)$. Thus,
+    \begin{multline*}
+        I(\psi) \circ I(\varphi)
+        = \varepsilon_{F(Z)} \circ F(U_{\M}(\psi)) \circ F(U_{\M}(\varphi) \circ \eta_X)\\
+        = \varepsilon_{F(Z)} \circ F(U_{\M}(\psi \circ \varphi) \circ \eta_X)
+        = I(\psi \circ \varphi),
+    \end{multline*}
+    as desired. We conclude that $I$ is indeed a functor. Since
+    \[I : \Hom_{\M{-}\Free}(F_{\M}(X),F_{\M}(Y)) \to \Hom_{\D}(F(X),F(Y))\]
+    is a bijection, $I$ is fully faithful. Next, for any morphism $f : X \to Y$ in $\C$, we have 
+    \begin{multline*}
+        I(F_{\M}(f))
+        = \varepsilon_{F(Y)} \circ F(U_{\M}(F_{\M}(f)) \circ \eta_X)
+        = \varepsilon_{F(Y)} \circ F(\eta_Y \circ f)\\
+        = \varepsilon_{F(Y)} \circ F(\eta_Y) \circ F(f)
+        = F(f).
+    \end{multline*}
+    This verifies that $I \circ F_{\M} = F$. Next, we check that $G \circ I = U_{\M}$. On objects, we note that $G(I(F_{\M}(X)) = G(F(X)) = U_{\M}(F_{\M}(X))$. Next, let $\varphi : F_{\M}(X) \to F_{\M}(Y)$ be an arbitrary morphism in $\M{-}\Free$. By definition of $\M$-algebra homomorphism and the fact that $F \dashv G$ is an $\M$-adjunction, the following diagram typechecks and commutes:
+    % https://q.uiver.app/?q=WzAsNCxbMCwwLCJHRkdGWCJdLFsyLDAsIkdGR0ZZIl0sWzAsMiwiR0ZYIl0sWzIsMiwiR0ZZIl0sWzAsMSwiR0ZVX3tcXE19XFx2YXJwaGkiXSxbMCwyLCJHXFx2YXJlcHNpbG9uX3tGWH0iLDJdLFsyLDMsIlVfe1xcTX1cXHZhcnBoaSIsMl0sWzEsMywiR1xcdmFyZXBzaWxvbl97Rll9Il1d
+    \[\begin{tikzcd}[ampersand replacement=\&]
+    	GFGFX \&\& GFGFY \\
+    	\\
+    	GFX \&\& GFY
+    	\arrow["{GFU_{\M}\varphi}", from=1-1, to=1-3]
+    	\arrow["{G\varepsilon_{FX}}"', from=1-1, to=3-1]
+    	\arrow["{U_{\M}\varphi}"', from=3-1, to=3-3]
+    	\arrow["{G\varepsilon_{FY}}", from=1-3, to=3-3]
+    \end{tikzcd}\]
+    Thus,
+    \begin{multline*}
+        G(I(\varphi))
+        = G(\varepsilon_{F(Y)} \circ F(U_{\M}(\varphi) \circ \eta_X))
+        = G(\varepsilon_{F(Y)}) \circ G(F(U_{\M}(\varphi))) \circ G(F(\eta_X))\\
+        = U_{\M}(\varphi) \circ G(\varepsilon_{F(X)}) \circ G(F(\eta_X))
+        = U_{\M}(\varphi) \circ G(\varepsilon_{F(X)} \circ F(\eta_X))\\
+        = U_{\M}(\varphi) \circ G(\id_{F(X)})
+        = U_{\M}(\varphi) \circ \id_{G(F(X))}
+        = U_{\M}(\varphi).
+    \end{multline*}
+    We conclude that $G \circ I = U_{\M}$ as desired. Finally, we must check that $I$ is unique. So, suppose that $I' : \M{-}\Free \to \D$ is a functor such that $I' \circ F_{\M} = F$ and $G \circ I' = U_{\M}$. On objects, we must have $I'(F_{\M}(X)) = F(X)$, so it now remains to check that $I$ and $I'$ agree on morphisms.
+\end{proof}
 
 \section{The Monadicity Theorem}
 
