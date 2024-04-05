@@ -12,6 +12,7 @@
 \usepackage{tikz-cd}
 
 \newtheorem{prop}{Proposition}
+\newtheorem{thm}{Theorem}
 \theoremstyle{definition}
 \newtheorem{defn}{Definition}
 \newtheorem{examples}{Examples}
@@ -378,7 +379,7 @@ This is the general story: for any monad $\M$, there is a ``largest possible'' t
 Let $\M$ be a monad on a category $\C$. $\M{-}\Free$ denotes the image of $F_{\M}$ in $\M{-}\Alg$, i.e. the full subcategory of $\M{-}\Alg$ spanned by the objects $F_{\M}(X)$ for all $X \in \C$.
 \end{defn}
 
-\begin{prop}
+\begin{prop}\label{prop:comparison}
 Let $\M$ be a monad on a category $\C$, and let $F \dashv G$ be an $\M$-adjunction with target category $\D$. There are unique functors $I : \M{-}\Free \to D$ and $J : \D \to \M{-}\Alg$ such that the following diagrams commute:
 % https://q.uiver.app/?q=WzAsNCxbMSwxLCJcXEMiXSxbMSwwLCJcXEQiXSxbMCwwLCJcXE17LX1cXEZyZWUiXSxbMiwwLCJcXE17LX1cXEFsZyJdLFswLDIsIkZfe1xcTX0iXSxbMCwxLCJGIiwyXSxbMCwzLCJGX3tcXE19IiwyXSxbMiwxLCJJIiwwLHsib2Zmc2V0IjoxLCJzdHlsZSI6eyJib2R5Ijp7Im5hbWUiOiJkYXNoZWQifX19XSxbMSwzLCJKIiwwLHsib2Zmc2V0IjoxLCJzdHlsZSI6eyJib2R5Ijp7Im5hbWUiOiJkYXNoZWQifX19XV0=
 \[\begin{tikzcd}[ampersand replacement=\&]
@@ -458,9 +459,34 @@ We include the proof for completeness.
         = U_{\M}(\varphi).
     \end{multline*}
     We conclude that $G \circ I = U_{\M}$ as desired. Finally, we must check that $I$ is unique. So, suppose that $I' : \M{-}\Free \to \D$ is a functor such that $I' \circ F_{\M} = F$ and $G \circ I' = U_{\M}$. On objects, we must have $I'(F_{\M}(X)) = F(X)$, so it now remains to check that $I$ and $I'$ agree on morphisms.
+    {\color{red}[TODO] FINISH}
 \end{proof}
 
 \section{The Monadicity Theorem}
+
+Since monadic functors have nice properties, it is helpful to be able to recognize them when they appear. In other words, given a right adjoint $U : \D \to \C$ inducing a monad $\mathbf{M}$ on $\C$, we wish to know when the comparison functor $\D \to \mathbf{M}{-}\Alg$ from Proposition~\ref{prop:comparison} is an equivalence. The famous \emph{Beck Monadicity Theorem} (sometimes called the ``Barr-Beck Monadicity Theorem'', although it is not due to Barr) fully answers this question.
+
+\begin{thm}[Beck]
+A functor $U : \D \to \C$ is monadic if and only if
+\begin{enumerate}
+\item $U$ has a left adjoint;
+\item $U$ reflects isomorphisms;
+\item $\D$ has equalizers of all $U$-split pairs, and $U$ preserves these equalizers.
+\end{enumerate}
+\end{thm}
+
+The first condition is of course necessary, since monadic functors must be right adjoints by definition. The second condition is also necessary, as we saw in the previous section. The third condition is somewhat more opaque, so we will take a moment to spell it out here.
+
+\begin{defn}
+    Let $U : \D \to \C$ be a functor. A pair $(f,g)$ of parallel morphisms $X \to Y$ in $\D$ is said to be \emph{$U$-split} if the pair $(Uf,Ug)$ has a split coequalizer.
+\end{defn}
+
+Now again we have an unfamiliar notion: what is a split coequalizer?
+
+\begin{defn}
+    A pair $(f,g)$ of parallel morphisms $X \to Y$ in a category $\C$ is said to have a \emph{split coequalizer} if there exists a morphism $e : Y \to Z$, $s : Z \to Y$, and $q : Y \to X$ such that
+    $e \circ f = \circ g$, $e \circ s = \id_Z$, $s \circ e = g \circ q$, and $f \circ q = \id_Y$.
+\end{defn}
 
 \section{Application}
 
